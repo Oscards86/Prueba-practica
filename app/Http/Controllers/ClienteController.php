@@ -7,50 +7,61 @@ use Illuminate\Http\Request;
 
 class ClienteController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index(){
-     $clientes = Cliente::all();
-     return view('clientes.index', compact('clientes'));
+    public function index()
+    {
+        $clientes = Cliente::all();
+        return view('clientes.index', compact('clientes'));
     }
 
-    public function create(){
+    public function create()
+    {
         return view('clientes.create');
     }
 
     public function store(Request $request)
     {
+        // Validaciones del lado del servidor
         $request->validate([
-            'nombre' => 'required',
-            'email' => 'required|email|unique:clientes,email',
-            'telefono' => 'required',
+            'nombre' => 'required|max:40',
+            'email' => 'required|email|max:255|unique:clientes,email',
+            'telefono' => 'required|numeric|digits:8|unique:clientes,telefono',
+        ], [
+            'email.unique' => 'El correo electrónico ya está registrado.',
+            'telefono.unique' => 'El número de teléfono ya está registrado.'
         ]);
-    
+
+        // Crear cliente
         Cliente::create($request->only(['nombre', 'email', 'telefono']));
-    
+
         return redirect()->route('clientes.index')->with('success', 'Cliente creado correctamente.');
     }
-    
 
-    public function edit(Cliente $cliente){
+    public function edit(Cliente $cliente)
+    {
         return view('clientes.edit', compact('cliente'));
     }
 
-    public function update(Request $request, Cliente $cliente) {
+    public function update(Request $request, Cliente $cliente)
+    {
+        // Validaciones del lado del servidor
         $request->validate([
-         'nombre' => 'required',
-         'email' => 'required|email|unique:clientes,email,' . $cliente->id,
-         'telefono' => 'required|unique:clientes,telefono,' . $cliente->id,
+            'nombre' => 'required|max:40',
+            'email' => 'required|email|max:255|unique:clientes,email,' . $cliente->id,
+            'telefono' => 'required|numeric|digits:8|unique:clientes,telefono,' . $cliente->id,
+        ], [
+            'email.unique' => 'El correo electrónico ya está registrado.',
+            'telefono.unique' => 'El número de teléfono ya está registrado.'
         ]);
 
-      $cliente->update($request->all());
-      return redirect()->route('clientes.index');
+        // Actualizar cliente
+        $cliente->update($request->all());
+
+        return redirect()->route('clientes.index')->with('success', 'Cliente actualizado correctamente.');
     }
 
-    public function destroy(Cliente $cliente){
-      $cliente->delete();
-      return redirect()->route('clientes.index');
+    public function destroy(Cliente $cliente)
+    {
+        $cliente->delete();
+        return redirect()->route('clientes.index')->with('success', 'Cliente eliminado correctamente.');
     }
-
 }
