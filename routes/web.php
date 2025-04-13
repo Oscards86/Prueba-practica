@@ -7,11 +7,10 @@ use App\Http\Controllers\LibroController;
 //Ruta del Login
 Route::get('login', [AuthController::class, 'showLoginForm'])->name('login');
 
-
-// Ruta raíz redirige a clientes
 Route::get('/', function () {
-    return redirect()->route('clientes.index');
+    return view('Inicio.inicio');
 });
+
 
 // Rutas de clientes
 Route::get('/clientes', [ClienteController::class, 'index'])->name('clientes.index');
@@ -21,9 +20,7 @@ Route::get('/clientes/{cliente}/edit', [ClienteController::class, 'edit'])->name
 Route::put('/clientes/{cliente}', [ClienteController::class, 'update'])->name('clientes.update');
 Route::delete('/clientes/{cliente}', [ClienteController::class, 'destroy'])->name('clientes.destroy');
 
-Route::get('/', function () {
-    return redirect()->route('libros.index');
-});
+
 
 // Rutas de libros
 Route::get('/libros', [LibroController::class, 'index'])->name('libros.index');
