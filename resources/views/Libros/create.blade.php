@@ -1,38 +1,41 @@
 @extends('layouts.layouts')
 
-@section('title', 'Listado de Libros')
+@section('title', 'Crear Libro')
 
 @section('content')
     <div class="container">
-        <h1>Libros</h1>
-        <a href="{{ route('libros.create') }}" class="btn btn-primary">Nuevo Libro</a>
+        <h1>Crear Libro</h1>
 
-        <table class="table mt-3">
-            <thead>
-                <tr>
-                    <th>Título</th>
-                    <th>Autor</th>
-                    <th>Editorial</th>
-                    <th>Acciones</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach($libros as $libro)
-                    <tr>
-                        <td>{{ $libro->titulo }}</td>
-                        <td>{{ $libro->autor }}</td>
-                        <td>{{ $libro->editorial }}</td>
-                        <td>
-                            <a href="{{ route('libros.edit', $libro) }}" class="btn btn-warning">Editar</a>
-                            <form action="{{ route('libros.destroy', $libro) }}" method="POST" style="display:inline;">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="btn btn-danger">Eliminar</button>
-                            </form>
-                        </td>
-                    </tr>
-                @endforeach
-            </tbody>
-        </table>
+        @if ($errors->any())
+            <div class="alert alert-danger">
+                <ul>
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+
+        <form action="{{ route('libros.store') }}" method="POST">
+            @csrf
+
+            <div class="form-group mb-3">
+                <label for="titulo">Título</label>
+                <input type="text" name="titulo" id="titulo" class="form-control" value="{{ old('titulo') }}" required>
+            </div>
+
+            <div class="form-group mb-3">
+                <label for="autor">Autor</label>
+                <input type="text" name="autor" id="autor" class="form-control" value="{{ old('autor') }}" required>
+            </div>
+
+            <div class="form-group mb-3">
+                <label for="editorial">Editorial</label>
+                <input type="text" name="editorial" id="editorial" class="form-control" value="{{ old('editorial') }}" required>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Guardar</button>
+            <a href="{{ route('libros.index') }}" class="btn btn-secondary">Cancelar</a>
+        </form>
     </div>
 @endsection
